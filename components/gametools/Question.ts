@@ -14,6 +14,14 @@ export enum QuestionType {
     FillInTheBlank,
     Custom
 }
+
+function getUnicode(str: string): number[] {
+    var arr = [];
+    for(var i=0; i<str.length; i++) {
+        arr.push(str.charCodeAt(i))
+    }
+    return arr;
+}
 export class Question extends InfoBox {
     readonly isQuestion: boolean;
     constructor(protected type: QuestionType, question: GameValue<string>, protected choices: QuestionOption[], protected shouldReDisplay = true, style?: StylisticOptions, protected instructions: GameValue<string> = "") {
@@ -53,6 +61,8 @@ export class Question extends InfoBox {
                 text = GameTools.stripPunctuation(text);
                 answer = GameTools.stripPunctuation(answer);
             }
+            text = text.replace(/\s+/g, ' ').trim();
+            answer = answer.replace(/\s+/g, ' ').trim();
             return text == answer;
         } else {
             throw new Error("Unsupported question type");
@@ -97,6 +107,7 @@ export class Question extends InfoBox {
             this.displayNext();
         } else {
             GameTools.lastResult = false;
+            
             this.title = "Sorry, that wasn't the correct answer.";
             if(this.shouldReDisplay)
                 this.redisplay();
